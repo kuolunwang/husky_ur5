@@ -1,0 +1,6 @@
+[submodule "arm_gazebo/plugin"]
+	path = arm_gazebo/plugin
+	url = git@github.com:JenniferBuehler/gazebo-pkgs.git
+[submodule "arm_gazebo/general-message-pkgs"]
+	path = arm_gazebo/general-message-pkgs
+	url = git@github.com:JenniferBuehler/general-message-pkgs.git
