@@ -76,7 +76,7 @@ RUN apt-get -o Acquire::ForceIPv4=true update && apt-get -o Acquire::ForceIPv4=t
     ros-$ROS_DISTRO-ddynamic-reconfigure \
     ros-$ROS_DISTRO-perception \
     ros-$ROS_DISTRO-rgbd-launch \
-    ros-$ROS_DISTRO-joystick-drivers \
+    # ros-$ROS_DISTRO-joystick-drivers \
     ros-$ROS_DISTRO-pointcloud-to-laserscan \
     ros-$ROS_DISTRO-robot-localization \
     ros-$ROS_DISTRO-spacenav-node \
