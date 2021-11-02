@@ -10,6 +10,3 @@
 [submodule "UR5"]
 	path = UR5
 	url = git@github.com:kuolunwang/UR5.git
-[submodule "husky"]
-	path = husky
-	url = git@github.com:husky/husky.git
