@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+
+<launch>
+
+  <arg name="robot_namespace" default="robot"/>
+  <arg name="debug" default="false"/>
+
+  <arg name="x" default="0.0"/>
+  <arg name="y" default="3.0"/>
+  <arg name="z" default="0.5"/>
+  <arg name="yaw" default="0.0"/>
+
+  <!-- Optionally disable teleop control -->
+  <arg name="joystick" default="true" />
+
+  <node pkg="tf" type="static_transform_publisher" name="fake_tcp_publisher" 
+    args="0.18 0.0 0.0 0.0 0.0 0.0 ur5/ee_link ur5/object_link 100"/>
+
+  <group ns="$(arg robot_namespace)">
+
+    <include file="$(find husky_ur5)/launch/robot_control.launch">
+        <arg name="robot_namespace" value="$(arg robot_namespace)" />
+    </include>
+  
+    <!-- Spawn robot in gazebo -->
+    <node name="spawn_robot_model" pkg="gazebo_ros" type="spawn_model" 
+        args="-x $(arg x)
+              -y $(arg y)
+              -z $(arg z)
+              -Y $(arg yaw)
+              -unpause
+              -urdf
+              -param robot_description
+              -model robot
+              -robot_namespace $(arg robot_namespace)" />
+
+  </group>
+
+  <!-- ur5 simulation -->
+  <include file="$(find arm_operation)/launch/ur5_sim.launch">
+        <arg name="tool_length" default="0.18"/>
+        <arg name="namespace" default="$(arg robot_namespace)" />
+  </include>
+
+  <!-- UR5 endeffector control -->
+  <node pkg="ur5_bringup" type="ur5_control.py" name="ur5_control_node" output="screen"/>
+  
+  <!-- <include file="$(find arm_gazebo)/launch/move_group.launch">
+    <arg name="debug" default="$(arg debug)" />
+  </include>
+  <include file="$(find arm_gazebo)/launch/moveit_rviz.launch">
+    <arg name="debug" default="$(arg debug)" />
+    <arg name="config" default="true" />
+  </include> -->
+
+</launch>
