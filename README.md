@@ -1,1 +1,1 @@
-# gazebo_module
+# semi-obs-navigation
