@@ -7,6 +7,3 @@
 [submodule "husky"]
 	path = husky
 	url = git@github.com:kuolunwang/husky.git
-[submodule "dynamic_gazebo_models"]
-	path = dynamic_gazebo_models
-	url = git@github.com:kuolunwang/dynamic_gazebo_models.git
