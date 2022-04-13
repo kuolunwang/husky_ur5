@@ -1,9 +1,9 @@
 [submodule "aws-robomaker-bookstore-world"]
 	path = aws-robomaker-bookstore-world
-	url = git@github.com:kuolunwang/aws-robomaker-bookstore-world.git
+	url = https://github.com/kuolunwang/aws-robomaker-bookstore-world.git
 [submodule "UR5"]
 	path = UR5
-	url = git@github.com:kuolunwang/UR5.git
+	url = https://github.com/kuolunwang/UR5.git
 [submodule "husky"]
 	path = husky
-	url = git@github.com:kuolunwang/husky.git
+	url = https://github.com/kuolunwang/husky.git
