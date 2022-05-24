@@ -106,40 +106,6 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
     </collision>
   </link>
 
-   <!-- #############################bumper_test###############################-->
-  <link name="bumper_link">
-    <inertial>
-        <origin rpy="0 0 0" xyz="0 0 0"/>
-        <mass value="0.0000000000001"/>
-        <inertia ixx="0.00000001" ixy="0.00000001" ixz="0.00000001" iyy="0.00000001" iyz="0.00000001" izz="0.00000001"/>
-    </inertial>
-    <collision name="base_link_fixed_joint_lump__robot/bumper_link">
-        <origin rpy="0 0 0" xyz="0 0 0.1"/>
-        <geometry>
-            <box size="1.0 0.7 0.31"/>
-        </geometry>
-    </collision>
-  </link>
-  <joint name="bumper_joint" type="fixed">
-      <origin xyz="0 0 0" rpy="0.0 0.0 0.0"/>
-      <parent link="base_link" />
-      <child link="bumper_link" />
-  </joint>
-
-  <gazebo reference="bumper_link">
-    <sensor name='contactsensor_sensor' type='contact'>
-      <always_on>true</always_on>
-      <updaterate>100.0</updaterate>
-      <contact>
-        <collision>base_link_fixed_joint_lump__robot/bumper_link_collision_2</collision>
-      </contact>
-          <plugin name="gazebo_ros_bumper_controller" filename="libgazebo_ros_bumper.so">
-              <bumperTopicName>bumper_states</bumperTopicName>
-              <frameName>world</frameName>
-          </plugin>
-    </sensor>
-  </gazebo>
-
   <!-- Base footprint is on the ground under the robot -->
   <link name="base_footprint"/>
 
@@ -294,98 +260,39 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
   <!-- Optional for Clearpath internal softwares -->
   <xacro:include filename="$(arg cpr_urdf_extras)" />
 
-  <link name="stick_link">
-    <inertial>
-      <mass value="50" />
-      <origin xyz="0 0 0" />
-      <inertia ixx="50.0" ixy="0.0" ixz="0.0"
-        iyy="50.0" iyz="0.0"
-        izz="50.0" />
-    </inertial>
-    <visual>
-      <origin xyz="0 0 0" />
-      <geometry>
-        <box size="0 0 0" /> <!-- does not need to match collision -->
-      </geometry>
-    </visual>
-    <collision>
-      <origin xyz="0 0 0" />
-      <geometry>
-        <box size="0 0 0" />
-      </geometry>
-    </collision>
-  </link>
-
-  <joint name="stick_joint" type="fixed">
-    <parent link="top_plate_link" />
-    <child link = "stick_link" />
-    <origin xyz="-0.2 0.0 0" rpy="0.0 0.0 0.0" />
-  </joint>
-
-  <link name="stick_move_link">
-    <inertial>
-      <mass value="2" />
-      <origin xyz="0 0 0" />
-      <inertia ixx="50.0" ixy="0.0" ixz="0.0"
-        iyy="50.0" iyz="0.0"
-        izz="50.0" />
-    </inertial>
-    <visual>
-      <origin xyz="0 0 0" />
-      <geometry>
-        <box size="0.5 0.09 0.03" />
-      </geometry>
-    </visual>
-    <collision name="stick_link_fixed_joint_lump__/stick_move_link">
-      <origin xyz="0 0 0" />
-      <geometry>
-        <box size="0.5 0.09 0.03" />
-      </geometry>
-    </collision>
-  </link>
-  <gazebo reference="stick_move_link">
-    <material>Gazebo/Yellow</material>
-  </gazebo>
-
-  <joint name="stick_move_joint" type="prismatic">
-    <parent link="stick_link" />
-    <child link = "stick_move_link" />
-    <axis xyz="1 0 0" />
-    <limit effort="50000.0" lower="0" upper="0.5" velocity="1"/>
-    <origin xyz="0.46 0.11 0.48" rpy="0.0 0.0 0.0" />
-  </joint>
-
-    <gazebo reference="stick_move_link">
-      <sensor name='contactsensor_sensor' type='contact'>
-        <always_on>true</always_on>
-        <updaterate>100.0</updaterate>
-        <contact>
-          <collision>stick_move_link_fixed_joint_lump__stick_link_fixed_joint_lump__/stick_move_link_collision</collision>
-        </contact>
-            <plugin name="gazebo_ros_bumper_controller" filename="libgazebo_ros_bumper.so">
-                <bumperTopicName>bumper_stick_states</bumperTopicName>
-                <frameName>world</frameName>
-            </plugin>
-      </sensor>
-    </gazebo>
-
   <transmission name="tran1">
     <type>transmission_interface/SimpleTransmission</type>
-    <joint name="stick_move_joint">
+    <!-- <joint name="stick_move_joint">
       <hardwareInterface>EffortJointInterface</hardwareInterface>
-    </joint>
+    </joint> -->
     <actuator name="motor1">
       <hardwareInterface>EffortJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
 
+  <xacro:ur5_robot prefix="ur5/" joint_limited="false"
+    transmission_hw_interface="$(arg transmission_hw_interface)"
+  />
+
+  <joint name="ur5_joint" type="fixed">
+    <parent link="top_plate_link" />
+    <child link = "ur5/base_link" />
+    <origin xyz="0.25 0.0 0.0" rpy="0.0 0.0 0.0" />
+  </joint>
+
+  <xacro:robotiq_ft300 prefix="" parent="ur5/tool0" >
+        <origin xyz="0 0 0" rpy="0 0 ${-pi/2}"/>
+    </xacro:robotiq_ft300>
+
+  <xacro:robotiq_85_gripper prefix="" parent="robotiq_ft_frame_id">
+    <origin xyz="0 0 0" rpy="0 ${-pi/2} 0"/>
+  </xacro:robotiq_85_gripper>
 
   <!-- lidar -->
   <xacro:include filename="$(find husky_ur5)/urdf/3d_lidar.urdf.xacro" />
-  <xacro:velodyne_lidar name="front_laser" topic="$(arg robot_namespace)/points" parent="top_plate_link" max_range="75" update_rate="15">
-      <origin xyz="0.0 0.0 0.25" rpy="0 0 0"/>
+  <xacro:velodyne_lidar name="front_laser" topic="$(arg robot_namespace)/points" parent="base_link" max_range="75" update_rate="15">
+      <origin xyz="0.45 0.0 0.325" rpy="0 0 0"/>
   </xacro:velodyne_lidar>
 
 </robot>
-

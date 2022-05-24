@@ -4,29 +4,44 @@
 
   <arg name="robot_namespace" default="robot"/>
   <arg name="debug" default="false"/>
+  <arg name="ur5" default="false"/>
+  <arg name="lidar" default="true"/>
+  <arg name="stick" default="false"/>
 
-  <arg name="x" default="2"/>
-  <arg name="y" default="0.0"/>
-  <arg name="z" default="0.3"/>
-  <arg name="yaw" default="0.0"/>
+  <!-- <arg name="x" default="9"/>
+  <arg name="y" default="13.3"/>
+  <arg name="z" default="0.13"/>
+  <arg name="yaw" default="-1.57"/> -->
+  <arg name="x" default="22.9"/>
+  <arg name="y" default="-23.52"/>
+  <arg name="z" default="0.13"/>
+  <arg name="yaw" default="-3.13"/>
 
   <!-- Optionally disable teleop control -->
   <arg name="joystick" default="true" />
 
-  <node pkg="tf" type="static_transform_publisher" name="fake_tcp_publisher" 
-    args="0.18 0.0 0.0 0.0 0.0 0.0 ur5/ee_link ur5/object_link 100"/>
+  <group if="$(arg ur5)">
+    <node pkg="tf" type="static_transform_publisher" name="world_publisher"
+    args="9.0 13.3 0.13 -1.57 0.0 0.0 world odom 100"/>
+
+    <node pkg="tf" type="static_transform_publisher" name="fake_publisher" 
+      args="0.18 0.0 0.0 0.0 0.0 0.0 ur5/ee_link object_link 100"/>
+  </group>
 
   <group ns="$(arg robot_namespace)">
 
     <include file="$(find husky_ur5)/launch/robot_control.launch">
         <arg name="robot_namespace" value="$(arg robot_namespace)" />
+        <arg name="lidar" value="$(arg lidar)" />
+        <arg name="ur5" value="$(arg ur5)" />
+        <arg name="stick" value="$(arg stick)" />
     </include>
-  
+
     <include file="$(find husky_control)/launch/teleop.launch">
         <arg name="joystick" value="$(arg joystick)" />
     </include>
     <!-- Spawn robot in gazebo -->
-    <node name="spawn_robot_model" pkg="gazebo_ros" type="spawn_model" 
+    <node name="spawn_robot_model" pkg="gazebo_ros" type="spawn_model"
         args="-x $(arg x)
               -y $(arg y)
               -z $(arg z)
@@ -37,23 +52,19 @@
               -model robot
               -robot_namespace $(arg robot_namespace)" />
 
+    <group if="$(arg ur5)">
+      <!-- ur5 simulation -->
+      <include file="$(find arm_operation)/launch/ur5_sim.launch">
+            <arg name="tool_length" default="0.18"/>
+            <arg name="namespace" default="$(arg robot_namespace)" />
+      </include>
+
+      <!-- UR5 endeffector control -->
+      <node pkg="ur5_bringup" type="ur5_control.py" name="ur5_control_node" output="screen">
+          <param name="name" value="$(arg robot_namespace)"/>
+      </node>
+    </group>
+
   </group>
-
-  <!-- ur5 simulation -->
-  <include file="$(find arm_operation)/launch/ur5_sim.launch">
-        <arg name="tool_length" default="0.18"/>
-        <arg name="namespace" default="$(arg robot_namespace)" />
-  </include>
-
-  <!-- UR5 endeffector control -->
-  <node pkg="ur5_bringup" type="ur5_control.py" name="ur5_control_node" output="screen"/>
-  
-  <!-- <include file="$(find arm_gazebo)/launch/move_group.launch">
-    <arg name="debug" default="$(arg debug)" />
-  </include>
-  <include file="$(find arm_gazebo)/launch/moveit_rviz.launch">
-    <arg name="debug" default="$(arg debug)" />
-    <arg name="config" default="true" />
-  </include> -->
 
 </launch>
