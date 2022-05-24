@@ -17,10 +17,11 @@
       kinematics_config:=$(arg kinematics_config)" />
     </group>
     <group unless="$(arg lidar)">
-    <param name="robot_description" command="$(find xacro)/xacro '$(find husky_ur5)/urdf/husky_ur5.urdf.xacro'
-      robot_namespace:=$(arg robot_namespace)
-      transmission_hw_interface:=$(arg transmission_hw_interface)
-      kinematics_config:=$(arg kinematics_config)" />
+      <param name="robot_description" command="$(find xacro)/xacro '$(find husky_ur5)/urdf/husky_ur5.urdf.xacro'
+        robot_namespace:=$(arg robot_namespace)
+        transmission_hw_interface:=$(arg transmission_hw_interface)
+        kinematics_config:=$(arg kinematics_config)" />
+    </group>
   </group>
 
   <group if="$(arg stick)">
