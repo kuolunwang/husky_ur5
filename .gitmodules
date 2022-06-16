@@ -4,3 +4,6 @@
 [submodule "husky"]
 	path = husky
 	url = git@github.com:kuolunwang/husky.git
+[submodule "VX300s"]
+	path = VX300s
+	url = git@github.com:kuolunwang/VX300s.git
