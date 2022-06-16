@@ -4,9 +4,12 @@
   <arg name="simulation" default="$(optenv ROBOT_SIMULATION false)"/>
   <arg name="robot_namespace" default="$(optenv ROBOT_NAMESPACE robot)"/>
   <arg name="enable_ekf" default="$(optenv ENABLE_EKF true)"/>
+  <arg name="rvizconfig"                        default="$(find interbotix_xsarm_descriptions)/rviz/xsarm_description.rviz" />
   <arg name="lidar" default="true"/>
   <arg name="ur5" default="false"/>
   <arg name="stick" default="false"/>
+  <arg name="vx300s" default="true"/>
+  <arg name="use_rviz" default="true"/>
 
   <!-- Load robot description -->
   <include file="$(find husky_ur5)/launch/robot_description.launch" >
@@ -14,12 +17,11 @@
     <arg name="lidar" value="$(arg lidar)" />
     <arg name="ur5" value="$(arg ur5)" />
     <arg name="stick" value="$(arg stick)" />
+    <arg name="vx300s" value="$(arg vx300s)"/>
   </include>
 
   <!-- Load controller configuration -->
   <rosparam command="load" file="$(find husky_control)/config/control.yaml" />
-
-  <rosparam file="$(find arm_gazebo)/controller/gazebo_controller.yaml" command="load"/>
 
   <!-- Spawn controllers -->
   <group unless="$(arg stick)">
@@ -34,6 +36,26 @@
   <group if="$(arg ur5)">
     <rosparam file="$(find arm_gazebo)/controller/arm_controller.yaml" command="load"/>
     <node name="arm_controller_spawner" pkg="controller_manager" type="controller_manager" args="spawn arm_controller gripper_controller" respawn="false" output="screen"/>
+  </group>
+
+  <group if="$(arg vx300s)">
+    <rosparam file="$(find interbotix_xsarm_gazebo)/config/trajectory_controllers/vx300s_trajectory_controllers.yaml" command="load"/>
+
+    <node
+      name="controller_spawner"
+      pkg="controller_manager"
+      type="controller_manager"
+      respawn="false"
+      output="screen"
+      args="spawn arm_controller gripper_controller joint_state_controller"/>
+
+    <node if="$(arg use_rviz)"
+      name="rviz"
+      pkg="rviz"
+      type="rviz"
+      args="-d $(arg rvizconfig)"
+      ns="vx300s">
+    </node>
   </group>
 
   <!-- Start EKF for localization -->
