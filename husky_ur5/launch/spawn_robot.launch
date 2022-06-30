@@ -21,10 +21,11 @@
   <!-- Optionally disable teleop control -->
   <arg name="joystick" default="true" />
 
-  <group if="$(arg ur5)">
     <node pkg="tf" type="static_transform_publisher" name="world_publisher"
-    args="9.0 13.3 0.13 -1.57 0.0 0.0 world odom 100"/>
+        args="9.0 13.3 0.13 -1.57 0.0 0.0 world odom 100"/>
 
+  <group if="$(arg ur5)">
+    
     <node pkg="tf" type="static_transform_publisher" name="fake_publisher" 
       args="0.18 0.0 0.0 0.0 0.0 0.0 ur5/ee_link object_link 100"/>
 
@@ -86,19 +87,9 @@
         <arg name="fake_execution"                    value="false"/>
         <arg name="publish_monitored_planning_scene"  value="true" />
       </include>
-    </group>
 
-<!--     <node
-      name="moveit_python_interface"
-      pkg="interbotix_moveit_interface"
-      type="moveit_python_interface"
-      respawn="false"
-      output="screen">
-      <rosparam command="load"                      file="$(find interbotix_xsarm_moveit_interface)/config/vx300s.yaml"/>
-      <param name="robot_model"                     value="$(arg robot_model)"/>
-      <remap from="/attached_collision_object"      to="/$(arg robot_name)/attached_collision_object"/>
-      <remap from="/collision_object"               to="/$(arg robot_name)/collision_object"/>
-    </node> -->
+      <node pkg="vx300s_bringup" type="vx300s_moveit.py" name="vx300s_moveit_node" output="screen"/>
+    </group>
 
   </group>
 
