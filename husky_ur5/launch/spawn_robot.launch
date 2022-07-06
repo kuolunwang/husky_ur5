@@ -21,8 +21,10 @@
   <!-- Optionally disable teleop control -->
   <arg name="joystick" default="true" />
 
+  <group unless="$(arg lidar)">
     <node pkg="tf" type="static_transform_publisher" name="world_publisher"
         args="9.0 13.3 0.13 -1.57 0.0 0.0 world odom 100"/>
+  </group>
 
   <group if="$(arg ur5)">
     
@@ -90,7 +92,6 @@
 
       <node pkg="vx300s_bringup" type="vx300s_moveit.py" name="vx300s_moveit_node" output="screen"/>
     </group>
-
   </group>
 
 </launch>
