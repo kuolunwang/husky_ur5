@@ -4,10 +4,11 @@
 
   <arg name="robot_namespace" default="robot"/>
   <arg name="debug" default="false"/>
-  <arg name="ur5" default="false"/>
-  <arg name="lidar" default="false"/>
+  <arg name="ur5" default="true"/>
+  <arg name="lidar" default="true"/>
   <arg name="stick" default="false"/>
-  <arg name="vx300s" default="true"/>
+  <arg name="vx300s" default="false"/>
+  <arg name="pull" default="false">
   <arg name="robot_model"                       default="robot"/>
   <arg name="robot_name"                        default="$(arg robot_model)"/>
   <arg name="base_link_frame"                   default="base_link"/>
@@ -24,6 +25,11 @@
   <group unless="$(arg lidar)">
     <node pkg="tf" type="static_transform_publisher" name="world_publisher"
         args="9.0 13.3 0.13 -1.57 0.0 0.0 world odom 100"/>
+  </group>
+
+  <group if="$(arg pull)">
+    <node pkg="tf" type="static_transform_publisher" name="world_publisher"
+        args="9.0 14.2 0.13 -1.57 0.0 0.0 world odom 100"/>
   </group>
 
   <group if="$(arg ur5)">

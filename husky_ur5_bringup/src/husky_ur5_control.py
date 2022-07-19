@@ -13,6 +13,7 @@ class husky_ur5:
         self.set_init_pose_srv = rospy.ServiceProxy("/gazebo/set_model_state", SetModelState)
 
         rospy.Service("husky_ur5/random", Trigger, self.setting)
+        rospy.Service("husky_ur5/pull_random", Trigger, self.setting_pull)
         
     def setting(self, req):
 
@@ -22,6 +23,29 @@ class husky_ur5:
         req.model_name = 'robot'
         req.pose.position.x = 9.0 + random.uniform(-0.1, 0.1)
         req.pose.position.y = 13.3 + random.uniform(-0.1, 0.1)
+        req.pose.position.z = 0.1323
+
+        angle = random.uniform(-95, -85)
+        r = R.from_euler("z", angle, degrees=True)
+        quat = r.as_quat()
+        req.pose.orientation.x = quat[0]
+        req.pose.orientation.y = quat[1]
+        req.pose.orientation.z = quat[2]
+        req.pose.orientation.w = quat[3]
+        self.set_init_pose_srv(req)
+
+        res.success = True
+
+        return res
+
+    def setting_pull(self, req):
+
+        res = TriggerResponse()
+
+        req = ModelState()
+        req.model_name = 'robot'
+        req.pose.position.x = 9.0 + random.uniform(-0.1, 0.1)
+        req.pose.position.y = 14.2 + random.uniform(-0.1, 0.1)
         req.pose.position.z = 0.1323
 
         angle = random.uniform(-95, -85)
