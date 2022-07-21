@@ -84,9 +84,6 @@
       <node pkg="ur5_bringup" type="ur5_control.py" name="ur5_control_node" output="screen">
           <param name="name" value="$(arg robot_namespace)"/>
       </node>
-
-      <!-- husky_ur5 control -->
-      <node pkg="husky_ur5_bringup" type="husky_ur5_control.py" name="husky_ur5_node" output="screen"/>
       
     </group>
     
@@ -105,5 +102,8 @@
       <node pkg="vx300s_bringup" type="vx300s_moveit.py" name="vx300s_moveit_node" output="screen"/>
     </group>
   </group>
+
+  <!-- husky_ur5 control -->
+  <node pkg="husky_ur5_bringup" type="husky_ur5_control.py" name="husky_ur5_node" output="screen"/>
 
 </launch>
