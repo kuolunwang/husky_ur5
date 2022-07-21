@@ -11,9 +11,32 @@ class husky_ur5:
     def __init__(self):
 
         self.set_init_pose_srv = rospy.ServiceProxy("/gazebo/set_model_state", SetModelState)
+        self.arm_home_srv = rospy.ServiceProxy("/robot/ur5/go_home", Trigger)
+        rospy.Service("/husky_ur5/random", Trigger, self.setting)
+        rospy.Service("/husky_ur5/pull_random", Trigger, self.setting_pull)
+        rospy.Service("/husky_ur5/init", Trigger, self.go_init)
 
-        rospy.Service("husky_ur5/random", Trigger, self.setting)
-        rospy.Service("husky_ur5/pull_random", Trigger, self.setting_pull)
+    def go_init(self, req):
+
+        res = TriggerResponse()
+
+        req = ModelState()
+        req.model_name = 'robot'
+        req.pose.position.x = random.uniform(7.0, 11.0)
+        req.pose.position.y = 17.0
+        req.pose.position.z = 0.1323
+        req.pose.orientation.x = 0.0
+        req.pose.orientation.y = 0.0
+        req.pose.orientation.z = -0.707
+        req.pose.orientation.w = 0.707
+
+        self.set_init_pose_srv(req)
+
+        self.arm_home_srv()
+
+        res.success = True
+
+        return res
         
     def setting(self, req):
 
