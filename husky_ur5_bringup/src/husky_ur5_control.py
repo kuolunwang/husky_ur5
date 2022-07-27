@@ -15,6 +15,32 @@ class husky_ur5:
         rospy.Service("/husky_ur5/random", Trigger, self.setting)
         rospy.Service("/husky_ur5/pull_random", Trigger, self.setting_pull)
         rospy.Service("/husky_ur5/init", Trigger, self.go_init)
+        rospy.Service("/husky/init", Trigger, self.go_init_husky)
+        self.set_door_srv = rospy.ServiceProxy("/gazebo/set_model_configuration", SetModelConfiguration)
+
+    def go_init_husky(self, req):
+
+        res = TriggerResponse()
+
+        req = ModelState()
+        req.model_name = 'robot'
+        req.pose.position.x = random.uniform(7.0, 11.0)
+        req.pose.position.y = 17.0
+        req.pose.position.z = 0.1323
+        req.pose.orientation.x = 0.0
+        req.pose.orientation.y = 0.0
+        req.pose.orientation.z = -0.707
+        req.pose.orientation.w = 0.707
+
+        # set robot
+        self.set_init_pose_srv(req)
+
+        # set door 
+        self.set_door_srv("hinge_door_0", "", ["hinge"], [0])
+
+        res.success = True
+
+        return res
 
     def go_init(self, req):
 
@@ -30,8 +56,13 @@ class husky_ur5:
         req.pose.orientation.z = -0.707
         req.pose.orientation.w = 0.707
 
+        # set robot
         self.set_init_pose_srv(req)
 
+        # set door 
+        self.set_door_srv("hinge_door_0", "", ["hinge"], [0])
+        
+        # arm go home
         self.arm_home_srv()
 
         res.success = True
@@ -55,7 +86,15 @@ class husky_ur5:
         req.pose.orientation.y = quat[1]
         req.pose.orientation.z = quat[2]
         req.pose.orientation.w = quat[3]
+        
+        # set robot
         self.set_init_pose_srv(req)
+
+        # set door 
+        self.set_door_srv("hinge_door_0", "", ["hinge"], [0])
+        
+        # arm go home
+        self.arm_home_srv()
 
         res.success = True
 
