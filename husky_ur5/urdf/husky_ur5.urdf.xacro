@@ -145,6 +145,40 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
 
   <xacro:husky_decorate />
 
+  <!-- #############################bumper_test###############################-->
+  <link name="bumper_link">
+    <inertial>
+        <origin rpy="0 0 0" xyz="0 0 0"/>
+        <mass value="0.0000000000001"/>
+        <inertia ixx="0.00000001" ixy="0.00000001" ixz="0.00000001" iyy="0.00000001" iyz="0.00000001" izz="0.00000001"/>
+    </inertial>
+    <collision name="base_link_fixed_joint_lump__robot/bumper_link">
+        <origin rpy="0 0 0" xyz="0 0 0.1"/>
+        <geometry>
+            <box size="1.0 0.7 0.31"/>
+        </geometry>
+    </collision>
+  </link>
+  <joint name="bumper_joint" type="fixed">
+      <origin xyz="0 0 0" rpy="0.0 0.0 0.0"/>
+      <parent link="base_link" />
+      <child link="bumper_link" />
+  </joint>
+
+  <gazebo reference="bumper_link">
+    <sensor name='contactsensor_sensor' type='contact'>
+      <always_on>true</always_on>
+      <updaterate>100.0</updaterate>
+      <contact>
+        <collision>base_link_fixed_joint_lump__robot/bumper_link_collision_2</collision>
+      </contact>
+          <plugin name="gazebo_ros_bumper_controller" filename="libgazebo_ros_bumper.so">
+              <bumperTopicName>bumper_states</bumperTopicName>
+              <frameName>world</frameName>
+          </plugin>
+    </sensor>
+  </gazebo>
+
   <!-- add the intel realsense to the sensor arch if needed -->
   <xacro:if value="$(arg realsense_enabled)">
     <link name="realsense_mountpoint"/>
