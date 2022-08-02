@@ -146,6 +146,7 @@ class husky_ur5:
 
         res = TriggerResponse()
 
+        # set robot position
         req = ModelState()
         req.model_name = 'robot'
         req.pose.position.x = 9.0 + random.uniform(-0.1, 0.1)
@@ -159,6 +160,18 @@ class husky_ur5:
         req.pose.orientation.y = quat[1]
         req.pose.orientation.z = quat[2]
         req.pose.orientation.w = quat[3]
+        self.set_init_pose_srv(req)
+
+        # set box position
+        req = ModelState()
+        req.model_name = 'pull_box'
+        req.pose.position.x = 8.96242507935
+        req.pose.position.y = 12.4507133386
+        req.pose.position.z = 0.57499964254
+        req.pose.orientation.x = 1.57141918775e-07
+        req.pose.orientation.y = -1.8141635704e-07
+        req.pose.orientation.z = 0.000529657457698
+        req.pose.orientation.w = 1.0
         self.set_init_pose_srv(req)
 
         res.success = True
@@ -182,6 +195,18 @@ class husky_ur5:
         req.pose.orientation.y = quat[1]
         req.pose.orientation.z = quat[2]
         req.pose.orientation.w = quat[3]
+        self.set_init_pose_srv(req)
+
+        # set cardboard
+        req = ModelState()
+        req.model_name = 'pull_box'
+        req.pose.position.x = 8.95191862859
+        req.pose.position.y = 12.1063873859
+        req.pose.position.z = 0.575066995938
+        req.pose.orientation.x = -0.0013749844125
+        req.pose.orientation.y = 3.13900522696e-07
+        req.pose.orientation.z = -1.68650047537e-05
+        req.pose.orientation.w = 1.0
         self.set_init_pose_srv(req)
 
         res.success = True
