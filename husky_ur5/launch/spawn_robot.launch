@@ -103,7 +103,4 @@
     </group>
   </group>
 
-  <!-- husky_ur5 control -->
-  <node pkg="husky_ur5_bringup" type="husky_ur5_control.py" name="husky_ur5_node" output="screen"/>
-
 </launch>
